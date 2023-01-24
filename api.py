@@ -23,7 +23,7 @@ class AOJAPI:
             data = json.loads(res.content)
             results.extend(data)
             if len(data) < size:
-                logger.debug(f'call AOJ API -> complete : {len(results)} contents')
+                logger.debug(f'call AOJ API -> done : {len(results)} contents')
                 return results
             page += 1
 
@@ -35,11 +35,15 @@ class AOJAPI:
         return AOJAPI.pageLoad(uri)
     
     @staticmethod
-    def findSubmissionByProblem(problemId, language=None):
+    def findSubmissionsByProblem(problemId, language=None, status: list=None):
         uri = API_ENDPOINT + f'/submission_records/problems/{problemId}' + '?page={page}&size={size}'
         res = AOJAPI.pageLoad(uri)
         if language:
             res = [i for i in res if i['language'] == language]
+            logger.debug(f'exclude other than specified languege : {language} : {len(res)} contents')
+        if status:
+            res = [i for i in res if i['status'] in status]
+            logger.debug(f'exclude other than specified status : {status} : {len(res)} contents')
         return res
 
 class Reader:
@@ -55,8 +59,8 @@ class Reader:
         return Reader.getCodeByIds(solutions, lambda i:i['judgeId'])
     
     @staticmethod
-    def findSubmissionCodesByProblem(problemId, language=None):
-        submissions = AOJAPI.findSubmissionByProblem(problemId, language)
+    def findSubmissionCodesByProblem(problemId, language=None, status: list=None):
+        submissions = AOJAPI.findSubmissionsByProblem(problemId, language, status)
         return Reader.getCodeByIds(submissions, lambda i:i['judgeId'])
     
     @staticmethod
@@ -90,5 +94,5 @@ class Reader:
                 pass
         if zipF != None:
             zipF.close()
-        logger.debug(f'extract codes -> complete : {fileFoundCount}/{len(judgeIds)} codes was found')
+        logger.debug(f'extract codes -> done : {fileFoundCount}/{len(judgeIds)} codes were found')
         return codes
