@@ -7,7 +7,9 @@ python3 -m pip install -r requirements.txt
 
 # 使用方法
 ```
-usage: main.py [-h] [--language LANGUAGE] [--out OUT] [--log_level {debug,info}] [--status STATUS] [--remove-comments] problem_id
+usage: main.py [-h] [--language LANGUAGE] [--out OUT] [--log_level {debug,info}] [--status STATUS] [--remove-comments]
+               [--remove-return-tab] [--normalize]
+               problem_id
 
 positional arguments:
   problem_id            問題ID
@@ -23,6 +25,9 @@ options:
                         「,」区切りで絞り込むstatusを指定する
   --remove-comments, -rmc
                         コメントを削除する
+  --remove-return-tab, -rmrt
+                        改行、タブを削除する
+  --normalize, -n       remove-comments、remove-return-tabを行う
 ```
 - statusの値
 ```
@@ -40,7 +45,7 @@ STATE_RUNNING = 9
 ```
 引用元：[AOJ API Reference](http://developers.u-aizu.ac.jp/index)
 
-## 例）問題ID`ALDS1_1_A`の正解のC言語のコードをコメントを削除して取得する
+## 例）問題ID`ALDS1_1_A`の正解のC言語の正規化したコードを`out.json`に出力する
 ```
-python3 main.py ALDS1_1_A --language C --status 4 --remove-comments
+python3 main.py ALDS1_1_A --language C --status 4 --normalize --out out.json
 ```
